@@ -2,9 +2,10 @@ from fastapi import APIRouter
 
 from src.controllers.dependencies import Actor, Admin, Db, Writer
 from src.controllers.report import report_csv, report_detail
+from src.schemas.measurements import MeasurementCreate
 from src.schemas.reviews import ReviewCreate, ReviewInfo
 from src.schemas.runs import RunCreate, RunInfo
-from src.services import reviews, runs
+from src.services import recheck, reviews, runs
 
 router = APIRouter(prefix='/runs')
 
@@ -22,6 +23,11 @@ def create(payload: RunCreate, session: Db, actor: Writer):
 @router.get('/{run_id}')
 def detail(run_id: int, session: Db, actor: Actor):
     return report_detail(session, run_id, actor)
+
+
+@router.post('/{run_id}/measurements', status_code=201)
+def measure(run_id: int, payload: MeasurementCreate, session: Db, actor: Writer):
+    return recheck.submit_measurement(session, run_id, payload, actor)
 
 
 @router.post('/{run_id}/review', response_model=ReviewInfo, status_code=201)

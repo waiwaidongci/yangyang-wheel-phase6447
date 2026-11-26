@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import JSON, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.config.database import Base
@@ -12,3 +12,4 @@ class Review(Base):
     decision: Mapped[str] = mapped_column(String(16))
     note: Mapped[str] = mapped_column(Text)
     created_at: Mapped[str] = mapped_column(String(32))
+    snapshot: Mapped[dict | None] = mapped_column(JSON, nullable=True)

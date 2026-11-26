@@ -45,6 +45,21 @@ def holdout_table(points: list[HoldoutPoint]) -> dict:
     return table('holdout_points', '留出测点复测对账', labels, rows)
 
 
+def error_bound_table(rows: list[dict]) -> dict:
+    labels = {'source': '模型来源', 'label': '模型说明', 'left_out_wheel': '留掉的历史轮组',
+              'holdout_points': '留出测点数', 'error_bound_mm': '留出最大绝对预测误差界（mm）'}
+    return table('error_bounds', '候选峰误差界（留一重拟合）', labels, rows)
+
+
+def candidate_table(rows: list[dict]) -> dict:
+    labels = {'scan_id': FIELDS['scan_id'], 'wheel_id': FIELDS['wheel_id'], 'fixture_id': FIELDS['fixture_id'],
+              'source': '候选来源', 'label': '候选说明', 'peak_deg': '候选峰角（°）',
+              'peak_mm': '候选峰有符号幅度（mm）', 'error_bound_mm': '候选误差界（mm）',
+              'fits_window': '候选峰可装进同宽角窗', 'proposed_angle_deg': '建议补测角（°）',
+              'proposed_min_gap_mm': '建议补测角预测区间最小间隔（mm）'}
+    return table('peak_candidates', '待测扫描候选峰与补测角', labels, rows)
+
+
 def coefficient_table(fourier: RidgeModel, bare: RidgeModel, options: dict) -> dict:
     rows = []
     for name, model, harmonics in (('fourier', fourier, options['harmonics']), ('bare_angle', bare, 0)):

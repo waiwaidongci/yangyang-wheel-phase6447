@@ -64,6 +64,11 @@ def export_table(session, run_id, key, actor):
     run, review = get_run(session, run_id, actor)
     if review is None or review.decision != Decision.APPROVED:
         raise HTTPException(409, '复核通过后可下载正式 CSV')
+    if key == 'recheck_windows':
+        table = (review.snapshot or {}).get('table')
+        if table is None:
+            raise LookupError('找不到结果表')
+        return table
     for table in run.result['tables']:
         if table['key'] == key:
             return table
